@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.controlsfx.control.ToggleSwitch?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="279.0" prefWidth="338.0" style="-fx-background-color: #9AABAB;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="programm.controllers.MainController">
+   <children>
+      <MenuBar prefHeight="26.0" prefWidth="338.0">
+         <menus>
+            <Menu mnemonicParsing="false" style="-fx-text-fill: #9aabab;" text="Опции">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#showOptions" text="Настройки" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Помощь">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#showHelp" text="Справка" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#showAbout" text="О программе" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+      <Label alignment="CENTER" layoutX="51.0" layoutY="42.0" prefHeight="22.0" prefWidth="237.0" style="-fx-border-color: #244949; -fx-border-radius: 10;" text=" Показатели температуры " textFill="#244949">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <GridPane layoutX="27.0" layoutY="74.0" prefHeight="193.0" prefWidth="286.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="77.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="79.0" minHeight="5.0" prefHeight="15.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="109.0" minHeight="10.0" prefHeight="66.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="129.0" minHeight="10.0" prefHeight="16.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="102.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="102.0" minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="102.0" minHeight="10.0" prefHeight="19.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="minLB" alignment="CENTER" prefHeight="84.0" prefWidth="80.0" style="-fx-background-color: #889999;" text="00" textFill="#403d3b" GridPane.rowIndex="2">
+               <font>
+                  <Font size="46.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="7.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="currentLB" alignment="CENTER" prefHeight="95.0" prefWidth="80.0" style="-fx-background-color: #889999;" text="00" textFill="#403d3b" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font size="52.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="7.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="maxLB" alignment="CENTER" prefHeight="84.0" prefWidth="80.0" style="-fx-background-color: #889999;" text="00" textFill="#403d3b" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <font>
+                  <Font size="46.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="7.0" />
+               </GridPane.margin>
+            </Label>
+            <Text fill="#244949" strokeType="OUTSIDE" strokeWidth="0.0" text="Минимальная" textAlignment="CENTER" wrappingWidth="94.9814453125">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Text>
+            <Text fill="#244949" strokeType="OUTSIDE" strokeWidth="0.0" text="Текущая" textAlignment="CENTER" wrappingWidth="95.01513671875" GridPane.columnIndex="1">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Text>
+            <Text fill="#244949" strokeType="OUTSIDE" strokeWidth="0.0" text="Максимальная" GridPane.columnIndex="2">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Text>
+            <Button mnemonicParsing="false" onAction="#reset" prefHeight="18.0" prefWidth="95.0" style="-fx-background-color: #244949;" text="Сброс" textFill="#9aabab" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <tooltip>
+                  <Tooltip consumeAutoHidingEvents="false" style="-fx-show-delay: 750ms;" text="Сброс всех показателей температуры и времени старта на текущие" wrapText="true" />
+               </tooltip>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Button>
+            <ToggleSwitch fx:id="notifications" onMouseClicked="#switchNotifications" prefHeight="18.0" prefWidth="88.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <Label fx:id="startDateLB" alignment="CENTER" prefHeight="18.0" prefWidth="106.0" textFill="#244949" GridPane.columnIndex="2" GridPane.rowIndex="6">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label text="Режим &quot;Без уведомлений&quot;" textFill="#244949" GridPane.columnSpan="2" GridPane.rowIndex="5">
+               <tooltip>
+                  <Tooltip style="-fx-show-delay: 750ms;" text="Уведомления о превышениях температуры не будут показываться" />
+               </tooltip>
+            </Label>
+            <Label text="Время старта" textFill="#244949" GridPane.rowIndex="6" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
