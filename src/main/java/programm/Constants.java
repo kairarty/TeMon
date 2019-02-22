@@ -32,8 +32,8 @@ public class Constants {
 
     // почта
     public static final String SEND_EMAIL_OPTION = "sendEmail";
-    public static final String EMAIL_FROM = "temon.mts@gmail.com";
-    public static final String PASSWORD = "ntgkjctnbfhntv";
+    public static final String EMAIL_FROM = "myemail";
+    public static final String PASSWORD = "mypass";
     public static final String EMAIL0 = "email0";
     public static final String EMAIL1 = "email1";
     public static final String EMAIL2 = "email2";
