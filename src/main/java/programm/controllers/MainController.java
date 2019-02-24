@@ -37,7 +37,7 @@ public class MainController {
     private int currentTemperature;
     private int maxTemperature;
     private static Timer timer;
-    private int temperature;
+    @Getter private static int temperature;
     private static Alert temperatureAlert;
     private static Alert SNMPAlert;
     private static Alert emailAlert;
@@ -60,15 +60,17 @@ public class MainController {
         SNMPCreator.startListening();
         temperature = SNMPCreator.getCurrentTemperature();
 
+        //temperature = 22;     // тест
+
+        minLB.setText(temperature+"");      // чтобы при сохранении настроек поля с границами температур не меняли своих значений
+        currentLB.setText(temperature+"");
+        maxLB.setText(temperature+"");
+
         runTemperatureListener();
     }
 
     private void runTemperatureListener() {
-        //temperature = 22;
-
-        minLB.setText(temperature+"");
-        currentLB.setText(temperature+"");
-        maxLB.setText(temperature+"");
+        //temperature = 22;          // тест
 
         minTemperature = 50;    // чтобы после реконнекта минимальная устанавливалась верно
         currentTemperature = temperature;
@@ -80,16 +82,18 @@ public class MainController {
 
         /*List<Integer> list = Arrays.asList(24,24,25,25,19,19,22,30,22,22,22,22,22,22,22,22,22,22,22,22,22,
                 20,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,
-                20,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22);
-        AtomicInteger i = new AtomicInteger();
-        i.set(0);*/
+                20,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22);           // тест
+        AtomicInteger i = new AtomicInteger();           // тест
+        i.set(0);            // тест */
 
         timer = FxTimer.runPeriodically(Duration.ofSeconds(duration), () -> {   // таймер для javaFX. Повторяет одно и
             try {                                                     // то же действие в try {} с промежутком DURATION
                 temperature = SNMPCreator.getCurrentTemperature();
+
                 /*temperature = list.get(i.get());
-                i.getAndIncrement();*/
-                System.out.println(temperature);
+                i.getAndIncrement();    // тест   */
+                //System.out.println(temperature);         // тест
+
                 if (temperature == 0) {
                     SNMPCreator.checkConnection(timer);
                     OtherMethods.log(temperature);
@@ -107,13 +111,13 @@ public class MainController {
                 minTemperature = temperature;
                 minLB.setText(minTemperature+"");
                 if (minTemperature <= minTemperatureLimit) {
-                    minLB.setStyle("-fx-text-fill: #383474; -fx-background-color: #889999");
+                    minLB.setStyle("-fx-text-fill: #383474");
                 }
             } else if (maxTemperature < temperature) {
                 maxTemperature = temperature;
                 maxLB.setText(maxTemperature+"");
                 if (maxTemperature >= maxTemperatureLimit) {
-                    maxLB.setStyle("-fx-text-fill: #A4494B; -fx-background-color: #889999");
+                    maxLB.setStyle("-fx-text-fill: #A4494B");
                 }
             }
 
@@ -121,11 +125,11 @@ public class MainController {
                 currentTemperature = temperature;
                 currentLB.setText(currentTemperature+"");
                 TrayController.drawTemperatureInTray(temperature, minTemperatureLimit, maxTemperatureLimit);
-                System.out.println(temperature);
+                //System.out.println(temperature);       // тест
                 if (currentTemperature <= minTemperatureLimit || currentTemperature >= maxTemperatureLimit) {
                     try {
                         OtherMethods.log(currentTemperature);
-                        currentLB.setStyle("-fx-text-fill: #A4494B; -fx-background-color: #889999");
+                        currentLB.setStyle("-fx-text-fill: #A4494B");
                         showTemperatureAlert();
                         if (USER_PREFS.getBoolean(SEND_EMAIL_OPTION, false)) { // если в реестре значение свойства стоит
                             EmailSender.sendEmail(temperature);  // true. Если нет такого свойства вообще - придёт false
@@ -134,7 +138,7 @@ public class MainController {
                         e.printStackTrace();
                     }
                 } else {
-                    currentLB.setStyle("-fx-text-fill: green; -fx-background-color: #889999");
+                    currentLB.setStyle("-fx-text-fill: green");
                 }
             }
         });
@@ -145,10 +149,10 @@ public class MainController {
         int currentTemperature = SNMPCreator.getCurrentTemperature();
         startDateLB.setText(OtherMethods.getStartDate());
         minLB.setText(currentTemperature+"");
-        minLB.setStyle("-fx-text-fill: #403d3b; -fx-background-color: #889999");
-        currentLB.setStyle("-fx-text-fill: #403d3b; -fx-background-color: #889999");
+        minLB.setStyle("-fx-text-fill: #ffffff");
+        currentLB.setStyle("-fx-text-fill: #ffffff");
         maxLB.setText(currentTemperature+"");
-        maxLB.setStyle("-fx-text-fill: #403d3b; -fx-background-color: #889999");
+        maxLB.setStyle("-fx-text-fill: #ffffff");
     }
 
     @FXML
@@ -163,7 +167,7 @@ public class MainController {
         stage.setScene(new Scene(root));
         stage.setResizable(false);
         stage.showAndWait();
-        // здесь может выполнится метод OptionsController.applySettings() при изменении сохранении
+        // здесь может выполнится метод OptionsController.saveSettingsAndCloseOptions() при изменении сохранении
         runTemperatureListener();
     }
 
@@ -261,7 +265,7 @@ public class MainController {
                 "список и удалите некорректный(-ые) email.");
         var stage = (Stage) emailAlert.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
-        Platform.runLater(emailAlert::showAndWait);
+        emailAlert.show();
     }
 
     private void showSNMPError() {
