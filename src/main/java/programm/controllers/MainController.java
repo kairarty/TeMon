@@ -37,6 +37,7 @@ public class MainController {
     private int currentTemperature;
     private int maxTemperature;
     private static Timer timer;
+    private static Timer emailTimer;
     @Getter private static int temperature;
     private static Alert temperatureAlert;
     private static Alert SNMPAlert;
@@ -67,6 +68,7 @@ public class MainController {
         maxLB.setText(temperature+"");
 
         runTemperatureListener();
+        runEmailSender();
     }
 
     private void runTemperatureListener() {
@@ -80,18 +82,18 @@ public class MainController {
         int minTemperatureLimit = Integer.parseInt(USER_PREFS.get(MIN_TEMPERATURE_LIMIT, "19"));
         int maxTemperatureLimit = Integer.parseInt(USER_PREFS.get(MAX_TEMPERATURE_LIMIT, "25"));
 
-        /*List<Integer> list = Arrays.asList(24,24,25,25,19,19,22,30,22,22,22,22,22,22,22,22,22,22,22,22,22,
-                20,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,
-                20,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22);           // тест
+        /*List<Integer> list = Arrays.asList(24,24,25,25,19,19,22,30,22,23,22,23,22,23,22,23,22,23,22,23,23,
+                20,21,22,23,22,23,22,23,22,23,22,23,22,23,22,23,22,23,22,23,22,23,22,
+                20,21,23,22,23,22,23,22,23,22,23,22,23,22,23,22,23,22,23,22,23,22,23);           // тест
         AtomicInteger i = new AtomicInteger();           // тест
-        i.set(0);            // тест */
+        i.set(0);            // тест*/
 
         timer = FxTimer.runPeriodically(Duration.ofSeconds(duration), () -> {   // таймер для javaFX. Повторяет одно и
             try {                                                     // то же действие в try {} с промежутком DURATION
                 temperature = SNMPCreator.getCurrentTemperature();
 
                 /*temperature = list.get(i.get());
-                i.getAndIncrement();    // тест   */
+                i.getAndIncrement();    // тест*/
                 //System.out.println(temperature);         // тест
 
                 if (temperature == 0) {
@@ -131,9 +133,6 @@ public class MainController {
                         OtherMethods.log(currentTemperature);
                         currentLB.setStyle("-fx-text-fill: #A4494B");
                         showTemperatureAlert();
-                        if (USER_PREFS.getBoolean(SEND_EMAIL_OPTION, false)) { // если в реестре значение свойства стоит
-                            EmailSender.sendEmail(temperature);  // true. Если нет такого свойства вообще - придёт false
-                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -142,6 +141,13 @@ public class MainController {
                 }
             }
         });
+    }
+
+    private void runEmailSender() {
+        if (USER_PREFS.getBoolean(SEND_EMAIL_OPTION, false)) {
+            int emailSendDuration = Integer.parseInt(USER_PREFS.get(EMAIL_SEND_DURATION, "15"));
+            emailTimer = FxTimer.runPeriodically(Duration.ofMinutes(emailSendDuration), EmailSender::sendEmail);
+        }
     }
 
     @FXML
@@ -158,6 +164,9 @@ public class MainController {
     @FXML
     private void showOptions() throws IOException {   // имя метода не привязано к fxml. Наполнение содержимым в RequestInfoController
         timer.stop();
+        if (emailTimer != null) {
+            emailTimer.stop();
+        }
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/options.fxml"));
         Parent root = fxmlLoader.load();
         var stage = new Stage();
@@ -169,6 +178,7 @@ public class MainController {
         stage.showAndWait();
         // здесь может выполнится метод OptionsController.saveSettingsAndCloseOptions() при изменении сохранении
         runTemperatureListener();
+        runEmailSender();
     }
 
     @FXML

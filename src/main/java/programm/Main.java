@@ -25,7 +25,7 @@ public class Main extends Application {
         Platform.setImplicitExit(false);    // не завершать программу при закрытии последнего окна
         SwingUtilities.invokeLater(() -> TrayController.createTrayMenu(mainStage));     // запуск трея
 
-        mainStage.show();
+        //mainStage.show();
     }
 
     public static void main(String[] args) {

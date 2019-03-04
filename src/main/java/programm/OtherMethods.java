@@ -4,13 +4,20 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static programm.Constants.*;
 // !!! Импортированы константы!!!
@@ -31,8 +38,7 @@ public class OtherMethods {
     }
 
     public static void log(int temperature) throws IOException {
-        var fileNameMask = DateTimeFormatter.ofPattern("YYYY.dd.MM");
-        String filename = LocalDate.now().format(fileNameMask);
+        String filename = LocalDate.now().format(DATE_FORMATTER);
         String path = new File("").getAbsolutePath();
         var logFile = new File(path + "/TeMon logs/" + filename + ".txt");
 
@@ -78,6 +84,36 @@ public class OtherMethods {
         return emailList;
     }
 
-    // нужно ли отправлять письма о прерывании соединения?
-    // проверить смену ip и oid
+    public static String getDangerousTemperatureList() {
+        String filename = LocalDate.now().format(DATE_FORMATTER);
+        String path = new File("").getAbsolutePath();
+        String fileName = path + "/TeMon logs/" + filename + ".txt";
+        Path logfile = Paths.get(fileName);
+
+        if (!Files.exists(logfile)) {
+            System.out.println("no");
+            return null;
+        }
+
+        List<String> rightTimeList = new ArrayList<>();
+        var startTime = LocalTime.now().minusMinutes(30);
+        try {
+            List<String> logList = Files.lines(Paths.get(fileName), StandardCharsets.UTF_8).collect(Collectors.toList());
+            for (String s : logList) {
+                if (LocalTime.parse(s.substring(0, 5)).isAfter(startTime)) {
+                    rightTimeList.add(s);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (rightTimeList.isEmpty()) {
+            System.out.println("пустой");
+            return null;
+        }
+        return String.join("\n", rightTimeList);
+    }
+
+    // сделать логи через Files.write(Paths.get("./output.txt"), "Information string herer".getBytes());
 }

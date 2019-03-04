@@ -1,5 +1,6 @@
 package programm;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -20,6 +21,8 @@ public class Constants {
 
     public static final String NOTIFICATIONS_MODE = "notifications";
 
+    static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("YYYY.MM.dd");
+
     // параметры
     public static final Preferences USER_PREFS = Preferences.userRoot().node("TeMonProperties");
     public static final String DEFAULT_VALUE = "empty";
@@ -32,16 +35,16 @@ public class Constants {
 
     // почта
     public static final String SEND_EMAIL_OPTION = "sendEmail";
-    public static final String EMAIL_FROM = "myemail";
-    public static final String PASSWORD = "mypass";
+    public static final String EMAIL_FROM = "temon.mts@gmail.com";
+    public static final String PASSWORD = "ntgkjctnbfhntv";
     public static final String EMAIL0 = "email0";
     public static final String EMAIL1 = "email1";
     public static final String EMAIL2 = "email2";
     public static final String EMAIL3 = "email3";
     public static final String EMAIL4 = "email4";
     public static final List<String> LIST_OF_EMAIL_NAMES_PREFERENCES = Arrays.asList(EMAIL0, EMAIL1, EMAIL2, EMAIL3, EMAIL4);
-
     public static final List<String> LIST_OF_DAYS = Arrays.asList("monday", "tuesday", "wednesday", "thursday", "friday",
             "saturday", "sunday");
     public static final List<String> LIST_OF_SHORT_DAYS = Arrays.asList("пн", "вт", "ср", "чт", "пт", "сб", "вс");
+    public static final String EMAIL_SEND_DURATION = "emailDuration";
 }

@@ -26,12 +26,12 @@ public class OptionsController {
     @FXML CheckBox autostartCB;
     // Вкладка Отправка на email
     @FXML ToggleSwitch emailSwitcher;
-    @FXML Label emailHeader;
+    @FXML Label emailHeaderLB;
     @FXML TextField emailTF;
     @FXML Button addEmailBtn;
     @FXML Button delEmailBtn;
     @FXML ListView<String> emailLV;
-    @FXML Label daysHeader;
+    @FXML Label daysHeaderLB;
     @FXML CheckBox mondayCB;
     @FXML CheckBox tuesdayCB;
     @FXML CheckBox wednesdayCB;
@@ -39,6 +39,8 @@ public class OptionsController {
     @FXML CheckBox fridayCB;
     @FXML CheckBox saturdayCB;
     @FXML CheckBox sundayCB;
+    @FXML Label sendHeaderLB;
+    @FXML TextField emailSendDurationTF;
 
     private ObservableList<String> defaultEmailList = FXCollections.observableArrayList();
     private String selectedEmail;
@@ -49,8 +51,9 @@ public class OptionsController {
     private void initialize() {
         // Вкладка Мониторинг
         setDurationTFFilter();
-        setMinTempTFFilter();
-        setMaxTempTFFilter();
+        setFieldsFilter(minTempTF);
+        setFieldsFilter(maxTempTF);
+        setFieldsFilter(emailSendDurationTF);
         setIpTFFilter();
         setOidTFFilter();
 
@@ -69,11 +72,6 @@ public class OptionsController {
             if(!newValue.matches("\\d*")) {
                 durationTF.setText(oldValue);
             }
-            if (newValue.matches("0*")){
-                showOptionsAlert("Ошибка применения параметра", "Период изменения температуры не может быть " +
-                        "0! Введите новое значение и повторите попытку.");
-                durationTF.clear();
-            }
         });
 
         var pattern = Pattern.compile(".{0,3}");    // максимальное число символов в поле - 3
@@ -82,35 +80,22 @@ public class OptionsController {
         durationTF.setTextFormatter(formatter);
     }
 
-    private void setMinTempTFFilter() {
-        minTempTF.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("\\d*")) {
-                minTempTF.setText(oldValue);
+    private void setFieldsFilter(TextField field) {
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("\\d*")) { // если введенный символ в поле не совпадают с регуляркой
+                field.setText(oldValue);      // не вводить его
             }
         });
 
-        var pattern = Pattern.compile(".{0,2}");
+        var pattern = Pattern.compile(".{0,2}");    // максимально 2 символа в поле. Без точки - ошибка
         var formatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change ->
                 pattern.matcher(change.getControlNewText()).matches() ? change : null);
-        minTempTF.setTextFormatter(formatter);
-    }
-
-    private void setMaxTempTFFilter() {
-        maxTempTF.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("\\d*")) {
-                maxTempTF.setText(oldValue);
-            }
-        });
-
-        var pattern = Pattern.compile(".{0,2}");
-        var formatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change ->
-                pattern.matcher(change.getControlNewText()).matches() ? change : null);
-        maxTempTF.setTextFormatter(formatter);
+        field.setTextFormatter(formatter);
     }
 
     private void setIpTFFilter() {
         ipTF.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("[0-9.]*")) {  // 0 или более символов в скобках
+            if(!newValue.matches("[0-9.]*")) {  // * -  или более символов в скобках
                 ipTF.setText(oldValue);
             }
         });
@@ -143,8 +128,8 @@ public class OptionsController {
         oidTF.setText(USER_PREFS.get(OID, "1.3.6.1.4.1.9.9.13.1.3.1.3.1006"));
         autostartCB.setSelected(USER_PREFS.getBoolean(AUTOSTART, false));
         // вкладка Почта
-        allNodes = Arrays.asList(emailHeader, emailTF, emailLV, addEmailBtn, daysHeader, mondayCB, tuesdayCB, wednesdayCB,
-                thursdayCB, fridayCB, saturdayCB, sundayCB);
+        allNodes = Arrays.asList(emailHeaderLB, emailTF, emailLV, addEmailBtn, daysHeaderLB, mondayCB, tuesdayCB, wednesdayCB,
+                thursdayCB, fridayCB, saturdayCB, sundayCB, sendHeaderLB, emailSendDurationTF);
         if (USER_PREFS.getBoolean(SEND_EMAIL_OPTION, false)) {
             emailSwitcher.setSelected(true);
             switchEmailFunction();
@@ -164,6 +149,7 @@ public class OptionsController {
                 checkBoxList.get(i).setSelected(true);
             }
         }
+        emailSendDurationTF.setText(USER_PREFS.get(EMAIL_SEND_DURATION, "15"));
     }
 
     @FXML
@@ -221,6 +207,19 @@ public class OptionsController {
             showOptionsAlert("Ошибка применения параметров", "Заполните все поля во вкладке 'Мониторинг'");
             return false;
         }
+        if (durationTF.getText().matches("0*")) {
+            showOptionsAlert("Ошибка применения параметра", "Период изменения температуры не может быть " +
+                    "0! Введите новое значение и повторите попытку.");
+            durationTF.clear();
+            return false;
+        }
+        if (emailSendDurationTF.getText().matches("0*")) {
+            showOptionsAlert("Ошибка применения параметра", "Период отправки на email не может быть 0! " +
+                    "Введите новое значение и повторите попытку.");
+            emailSendDurationTF.clear();
+            return false;
+        }
+
         USER_PREFS.put(DURATION, durationTF.getText());
         USER_PREFS.put(MIN_TEMPERATURE_LIMIT, minTempTF.getText());
         USER_PREFS.put(MAX_TEMPERATURE_LIMIT, maxTempTF.getText());
@@ -255,6 +254,8 @@ public class OptionsController {
                 USER_PREFS.remove(LIST_OF_EMAIL_NAMES_PREFERENCES.get(i));
             }
         }
+
+        USER_PREFS.put(EMAIL_SEND_DURATION, emailSendDurationTF.getText());
 
         if (emailSwitcher.isSelected()) {
             USER_PREFS.putBoolean(SEND_EMAIL_OPTION, true);
