@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="571.0" prefWidth="380.0" style="-fx-background-color: DDDDDD;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="programm.controllers.OptionsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="610.0" prefWidth="380.0" style="-fx-background-color: DDDDDD;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="programm.controllers.OptionsController">
    <children>
       <TabPane prefHeight="512.0" prefWidth="380.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="43.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -116,7 +116,7 @@
                                     </Label>
                                     <TextField fx:id="ipTF" prefHeight="25.0" prefWidth="100.0">
                                        <tooltip>
-                                          <Tooltip consumeAutoHidingEvents="false" text="IP-адрес по умолчанию для серверной: 10.177.82.7 " wrapText="true" />
+                                          <Tooltip consumeAutoHidingEvents="false" style="-fx-show-delay: 750ms;" text="IP-адрес по умолчанию для серверной: 10.177.82.7 " wrapText="true" />
                                        </tooltip>
                                     </TextField>
                                  </children>
@@ -136,7 +136,7 @@
                                     </Label>
                                     <TextField fx:id="oidTF" prefHeight="25.0" prefWidth="188.0">
                                        <tooltip>
-                                          <Tooltip consumeAutoHidingEvents="false" text="OID по умолчанию для серверной: 1.3.6.1.4.1.9.9.13.1.3.1.3.1006" wrapText="true" />
+                                          <Tooltip consumeAutoHidingEvents="false" style="-fx-show-delay: 750ms;" text="OID по умолчанию для серверной: 1.3.6.1.4.1.9.9.13.1.3.1.3.1006" wrapText="true" />
                                        </tooltip>
                                     </TextField>
                                  </children>
@@ -177,7 +177,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="492.0" prefWidth="360.0" style="-fx-background-color: white;">
                      <children>
-                        <Label fx:id="daysHeader" disable="true" layoutX="6.0" layoutY="317.0" prefHeight="54.0" prefWidth="361.0" text="Выберите дни, по которым будут отправляться предупреждения на email о превышении температурных границ:" textAlignment="CENTER" wrapText="true">
+                        <Label fx:id="daysHeaderLB" disable="true" layoutX="6.0" layoutY="317.0" prefHeight="54.0" prefWidth="361.0" text="Выберите дни, по которым будут отправляться предупреждения на email о превышении температурных границ:" textAlignment="CENTER" wrapText="true">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -202,7 +202,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="emailHeader" disable="true" layoutY="44.0" prefHeight="51.0" prefWidth="366.0" text="Введите валидный email, на который будут отправляться предупреждения о превышении температуры (максимум 5 почтовых ящиков для 1 ПК):" textAlignment="CENTER" wrapText="true">
+                        <Label fx:id="emailHeaderLB" disable="true" layoutY="44.0" prefHeight="51.0" prefWidth="366.0" text="Введите валидный email, на который будут отправляться предупреждения о превышении температуры (максимум 5 почтовых ящиков для 1 ПК):" textAlignment="CENTER" wrapText="true">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -220,7 +220,27 @@
                         <Button fx:id="delEmailBtn" disable="true" layoutX="144.0" layoutY="266.0" mnemonicParsing="false" onAction="#delEmail" prefWidth="70.0" text="Удалить" />
                         <Separator layoutX="79.0" layoutY="308.0" prefWidth="200.0" />
                         <Separator layoutX="23.0" layoutY="38.0" prefHeight="0.0" prefWidth="312.0" />
-                        <ToggleSwitch fx:id="emailSwitcher" layoutX="301.0" layoutY="9.0" onMouseClicked="#switchEmailFunction" />
+                        <Separator layoutX="79.0" layoutY="495.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT" layoutY="501.0" prefHeight="26.0" prefWidth="367.0" spacing="65.0">
+                           <children>
+                              <Label fx:id="sendHeaderLB" disable="true" text="Периодичность отправки писем, минут">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <tooltip>
+                                    <Tooltip style="-fx-show-delay: 750ms;" text="Если будет превышение температуры, то письма будут отправляться через указанный промежуток времени" />
+                                 </tooltip>
+                              </Label>
+                              <TextField fx:id="emailSendDurationTF" disable="true" prefHeight="26.0" prefWidth="42.0" />
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="15.0" />
+                           </padding>
+                        </HBox>
+                        <ToggleSwitch fx:id="emailSwitcher" layoutX="302.0" layoutY="8.0" onMouseClicked="#switchEmailFunction" />
                      </children>
                   </AnchorPane>
             </content>
@@ -233,7 +253,7 @@
             <Insets left="6.0" right="8.0" />
          </padding>
       </TabPane>
-      <HBox alignment="CENTER_RIGHT" layoutX="20.0" layoutY="533.0" prefHeight="33.0" prefWidth="354.0" spacing="10.0">
+      <HBox alignment="CENTER_RIGHT" layoutX="20.0" layoutY="571.0" prefHeight="33.0" prefWidth="354.0" spacing="10.0">
          <children>
           <Button mnemonicParsing="false" onAction="#saveSettingsAndCloseOptions" prefWidth="70.0" text="ОК" />
             <Button mnemonicParsing="false" onAction="#closeOptions" prefWidth="70.0" text="Отмена" />

@@ -12,11 +12,12 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="279.0" prefWidth="338.0" style="-fx-background-color: #9AABAB;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="programm.controllers.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="279.0" prefWidth="338.0" style="-fx-background-color: #4D4D4F;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="programm.controllers.MainController">
    <children>
       <MenuBar prefHeight="26.0" prefWidth="338.0">
          <menus>
@@ -34,9 +35,9 @@
             </Menu>
          </menus>
       </MenuBar>
-      <Label alignment="CENTER" layoutX="51.0" layoutY="42.0" prefHeight="22.0" prefWidth="237.0" style="-fx-border-color: #244949; -fx-border-radius: 10;" text=" Показатели температуры " textFill="#244949">
+      <Label alignment="CENTER" layoutX="51.0" layoutY="42.0" prefHeight="22.0" prefWidth="237.0" style="-fx-border-color: #ffffff; -fx-border-radius: 10;" text=" Показатели температуры " textFill="WHITE">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="Century Gothic Bold" size="16.0" />
          </font>
       </Label>
       <GridPane layoutX="27.0" layoutY="74.0" prefHeight="193.0" prefWidth="286.0">
@@ -55,66 +56,78 @@
             <RowConstraints maxHeight="102.0" minHeight="10.0" prefHeight="19.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="minLB" alignment="CENTER" prefHeight="84.0" prefWidth="80.0" style="-fx-background-color: #889999;" text="00" textFill="#403d3b" GridPane.rowIndex="2">
+            <Label fx:id="minLB" alignment="CENTER" prefHeight="84.0" prefWidth="80.0" text="00" textFill="WHITE" GridPane.rowIndex="2">
                <font>
-                  <Font size="46.0" />
+                  <Font name="Century Gothic" size="46.0" />
                </font>
                <GridPane.margin>
                   <Insets left="7.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="currentLB" alignment="CENTER" prefHeight="95.0" prefWidth="80.0" style="-fx-background-color: #889999;" text="00" textFill="#403d3b" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label fx:id="currentLB" alignment="CENTER" prefHeight="36.0" prefWidth="80.0" text="00" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <font>
-                  <Font size="52.0" />
+                  <Font name="Century Gothic" size="52.0" />
                </font>
                <GridPane.margin>
                   <Insets left="7.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="maxLB" alignment="CENTER" prefHeight="84.0" prefWidth="80.0" style="-fx-background-color: #889999;" text="00" textFill="#403d3b" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Label fx:id="maxLB" alignment="CENTER" prefHeight="84.0" prefWidth="80.0" text="00" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <font>
-                  <Font size="46.0" />
+                  <Font name="Century Gothic" size="46.0" />
                </font>
                <GridPane.margin>
                   <Insets left="7.0" />
                </GridPane.margin>
             </Label>
-            <Text fill="#244949" strokeType="OUTSIDE" strokeWidth="0.0" text="Минимальная" textAlignment="CENTER" wrappingWidth="94.9814453125">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Min." textAlignment="CENTER" wrappingWidth="94.9814453125">
                <font>
-                  <Font name="System Bold" size="13.0" />
+                  <Font name="Century Gothic Bold" size="16.0" />
                </font>
             </Text>
-            <Text fill="#244949" strokeType="OUTSIDE" strokeWidth="0.0" text="Текущая" textAlignment="CENTER" wrappingWidth="95.01513671875" GridPane.columnIndex="1">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Current" textAlignment="CENTER" wrappingWidth="95.01513671875" GridPane.columnIndex="1">
                <font>
-                  <Font name="System Bold" size="13.0" />
+                  <Font name="Century Gothic Bold" size="16.0" />
                </font>
             </Text>
-            <Text fill="#244949" strokeType="OUTSIDE" strokeWidth="0.0" text="Максимальная" GridPane.columnIndex="2">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Max." textAlignment="CENTER" wrappingWidth="95.7386474609375" GridPane.columnIndex="2">
                <font>
-                  <Font name="System Bold" size="13.0" />
+                  <Font name="Century Gothic Bold" size="16.0" />
                </font>
             </Text>
-            <Button mnemonicParsing="false" onAction="#reset" prefHeight="18.0" prefWidth="95.0" style="-fx-background-color: #244949;" text="Сброс" textFill="#9aabab" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Button mnemonicParsing="false" onAction="#reset" prefHeight="33.0" prefWidth="95.0" style="-fx-background-color: #ffffff;" text="Сброс" textFill="#4d4d4f" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <tooltip>
                   <Tooltip consumeAutoHidingEvents="false" style="-fx-show-delay: 750ms;" text="Сброс всех показателей температуры и времени старта на текущие" wrapText="true" />
                </tooltip>
                <font>
-                  <Font name="System Bold" size="13.0" />
+                  <Font name="Century Gothic Bold" size="14.0" />
                </font>
             </Button>
             <ToggleSwitch fx:id="notifications" onMouseClicked="#switchNotifications" prefHeight="18.0" prefWidth="88.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-            <Label fx:id="startDateLB" alignment="CENTER" prefHeight="18.0" prefWidth="106.0" textFill="#244949" GridPane.columnIndex="2" GridPane.rowIndex="6">
+            <Label fx:id="startDateLB" alignment="BOTTOM_CENTER" prefHeight="18.0" prefWidth="106.0" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="6">
                <font>
-                  <Font size="11.0" />
+                  <Font name="Century Gothic" size="11.0" />
                </font>
             </Label>
-            <Label text="Режим &quot;Без уведомлений&quot;" textFill="#244949" GridPane.columnSpan="2" GridPane.rowIndex="5">
+            <Label text="Режим &quot;Без уведомлений&quot;" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="5">
                <tooltip>
                   <Tooltip style="-fx-show-delay: 750ms;" text="Уведомления о превышениях температуры не будут показываться" />
                </tooltip>
+               <font>
+                  <Font name="Century Gothic" size="12.0" />
+               </font>
             </Label>
-            <Label text="Время старта" textFill="#244949" GridPane.rowIndex="6" />
+            <Label prefHeight="25.0" prefWidth="84.0" text="Время старта" textFill="WHITE" GridPane.rowIndex="6">
+               <font>
+                  <Font name="Century Gothic" size="12.0" />
+               </font></Label>
          </children>
       </GridPane>
+      <Line endX="185.0" endY="-7.62939453125E-6" layoutX="128.0" layoutY="107.0" startX="-100.0" stroke="#605f64" strokeWidth="2.0" />
+      <Line endX="185.0" endY="-7.62939453125E-6" layoutX="128.0" layoutY="178.0" startX="-100.0" stroke="#605f64" strokeWidth="2.0" />
+      <Line endX="-100.00000762939453" endY="79.58578491210938" layoutX="128.0" layoutY="97.0" startX="-100.00000762939453" startY="10.999992370605469" stroke="#605f64" strokeWidth="2.0" />
+      <Line endX="-100.00000762939453" endY="79.58578491210938" layoutX="413.0" layoutY="97.0" startX="-100.00000762939453" startY="10.999992370605469" stroke="#605f64" strokeWidth="2.0" />
+      <Line endX="-100.00000762939453" endY="60.0" layoutX="321.0" layoutY="107.0" startX="-100.00000762939453" startY="10.999992370605469" stroke="#605f64" strokeWidth="2.0" />
+      <Line endX="-100.00000762939453" endY="60.0" layoutX="221.0" layoutY="106.0" startX="-100.00000762939453" startY="10.999992370605469" stroke="#605f64" strokeWidth="2.0" />
    </children>
 </AnchorPane>
