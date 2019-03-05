@@ -1,119 +1,122 @@
-package programm;
+package program.controllerMethods;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Component;
+import program.model.Readings;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.DayOfWeek;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static programm.Constants.*;
-// !!! Импортированы константы!!!
+@Component
+public class OtherMethods {     // класс с методами, обслуживающими класс DBUse для упрощения его понимания
 
-public class OtherMethods {
-    public static String getStartDate() {
-        var dateMask = DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm");
-        return LocalDateTime.now().format(dateMask);
-    }
-
-    public static Boolean isSendDayRight() {
-        var todayDate = LocalDate.now();
-        DayOfWeek dayOfWeek = todayDate.getDayOfWeek();
-        Locale localeRu = new Locale("ru", "RU");
-        String todayDayOdWeek = dayOfWeek.getDisplayName(TextStyle.SHORT, localeRu);
-        int dayOfWeekNumber = LocalDate.now().getDayOfWeek().getValue();
-        return USER_PREFS.get(LIST_OF_DAYS.get(dayOfWeekNumber - 1), DEFAULT_VALUE).equals(todayDayOdWeek);
-    }
-
-    public static void log(int temperature) throws IOException {
-        String filename = LocalDate.now().format(DATE_FORMATTER);
-        String path = new File("").getAbsolutePath();
-        var logFile = new File(path + "/TeMon logs/" + filename + ".txt");
-
-        var dateMask = DateTimeFormatter.ofPattern("HH:mm");
-        String currentTime = LocalDateTime.now().format(dateMask);
-
-        if (temperature == 0) {
-            FileUtils.writeStringToFile(logFile, currentTime + " Ошибка связи с датчиком. Восстановление соединения.\n", "UTF-8", true);
-            return;
-        }
-        FileUtils.writeStringToFile(logFile, currentTime + " превышение температуры: " + temperature + " град.\n", "UTF-8", true);
-    }
-
-    public static void addJarToStartup(boolean startFlag) {
-        File jar = new File(System.getProperty("java.class.path")).getAbsoluteFile();
-        String jarname = jar.getName();
-        String absolutePath = jar.getAbsolutePath();
-        String command;
-        if (startFlag) {
-            command = "cmd /C reg add HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run /v "
-                    + jarname + " /t REG_SZ /d \"" + absolutePath + "\" /f";    // добавить в автозагрузку запущенный jar
-        } else {                                                                // с того места, откуда он запустился
-            command = "cmd /C reg delete HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run /v "
-                    + jarname + " /f\r\n";      // далить из автозагрузки ранее добавленный jar
-        }
-        try {
-            Runtime.getRuntime().exec(command);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
-
-    public static List<String> getEmailsList() {
-        List<String> emailList = new java.util.ArrayList<>(java.util.Arrays.asList(
-                USER_PREFS.get(EMAIL0, DEFAULT_VALUE),
-                USER_PREFS.get(EMAIL1, DEFAULT_VALUE),
-                USER_PREFS.get(EMAIL2, DEFAULT_VALUE),
-                USER_PREFS.get(EMAIL3, DEFAULT_VALUE),
-                USER_PREFS.get(EMAIL4, DEFAULT_VALUE)
-        ));
-
-        emailList.removeIf(e -> e.equals(DEFAULT_VALUE));
-        return emailList;
-    }
-
-    public static String getDangerousTemperatureList() {
-        String filename = LocalDate.now().format(DATE_FORMATTER);
-        String path = new File("").getAbsolutePath();
-        String fileName = path + "/TeMon logs/" + filename + ".txt";
-        Path logfile = Paths.get(fileName);
-
-        if (!Files.exists(logfile)) {
-            System.out.println("no");
-            return null;
-        }
-
-        List<String> rightTimeList = new ArrayList<>();
-        var startTime = LocalTime.now().minusMinutes(30);
-        try {
-            List<String> logList = Files.lines(Paths.get(fileName), StandardCharsets.UTF_8).collect(Collectors.toList());
-            for (String s : logList) {
-                if (LocalTime.parse(s.substring(0, 5)).isAfter(startTime)) {
-                    rightTimeList.add(s);
-                }
+    <T> String getAverageParameter(List<T> inputParametersList ) {  // приходят List<Double> и List<Integer>
+        double averageParameter;
+        if (inputParametersList.get(0) instanceof Double) {     // для List<Double>
+            averageParameter = inputParametersList.stream().collect(Collectors.averagingDouble(r -> (double) r));
+            if(averageParameter == (int) averageParameter) {
+                return String.valueOf((int) averageParameter);
             }
+            return String.format("%8.1f", averageParameter);
+        }
+
+        averageParameter = inputParametersList.stream().collect(Collectors.averagingInt(s -> (int) s)); // для List<Integer>
+        if (averageParameter == (int) averageParameter) {
+            return String.valueOf((int) averageParameter);
+        }
+        return String.format("%8.1f", averageParameter);
+    }
+
+    public String getDBDateFormat(String selectedDate) {
+        var formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        var formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(selectedDate, formatter).format(formatter2);
+    }
+
+    public void log(String callClassName, String username, String action) {
+        var datemask = DateTimeFormatter.ofPattern("d.M.YY");
+        String currentDate = LocalDateTime.now().format(datemask);
+        File logFile = new File("C:/logsMTS/log_" + currentDate + ".txt");
+        var timeMask = DateTimeFormatter.ofPattern("HH:mm");
+        String currentTime = LocalDateTime.now().format(timeMask);
+        try {
+            FileUtils.writeStringToFile(logFile, currentTime + ". " + callClassName + ", " + username  +  ": " +
+                    action + "\n", "UTF-8", true);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if (rightTimeList.isEmpty()) {
-            System.out.println("пустой");
-            return null;
-        }
-        return String.join("\n", rightTimeList);
     }
 
-    // сделать логи через Files.write(Paths.get("./output.txt"), "Information string herer".getBytes());
+    List<Double> getRealReadingsList(List <Double> inputDeviceReadingsList) {  // вычитает от текущих поаказаний
+        List<Double> readings_inList = new ArrayList<>();       // прошломесячные, чтобы получить чистый расход за каждый месяц
+        var dFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));
+        for (int i = 1; i < inputDeviceReadingsList.size() ; i++) {
+            readings_inList.add(Double.valueOf(dFormat.format(inputDeviceReadingsList.get(i-1) -
+                    inputDeviceReadingsList.get(i))));  // чтобы шло округление до 2-х десятичных знаков
+        }
+        Collections.reverse(readings_inList);
+        return readings_inList;
+    }
+
+    List<Integer> convertWorktimeList(List <Integer> inputDeviceReadingsList) {
+        List<Integer> readings_inList = new ArrayList<>();
+        for (int i = 1; i < inputDeviceReadingsList.size() ; i++) {
+            readings_inList.add(inputDeviceReadingsList.get(i-1) - inputDeviceReadingsList.get(i));
+        }
+        Collections.reverse(readings_inList);
+        return readings_inList;
+    }
+
+    public List<String> getDatesForSelect() {
+        var todayDate = LocalDate.now();
+        var todayYear = todayDate.getYear();
+        var todayMonth = todayDate.getMonth();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.YYYY");
+        List<String> totalDates;
+        if (todayDate.getDayOfMonth() >= 3) {
+            var startDate = LocalDate.of(todayYear, todayMonth, 21);
+            var endDate = todayDate.plusDays(1);    // день добавляется, потому что datesUntil(endDate) не учитывает
+            totalDates =  startDate.datesUntil(endDate)     // последний день
+                    .map(e -> e.format(dateFormatter))
+                    .collect(Collectors.toList());
+        } else {
+            var startDate = LocalDate.of(todayYear, todayDate.minusMonths(1).getMonth(), 21);
+            var endDate = todayDate.plusDays(1);
+            totalDates =  startDate.datesUntil(endDate)
+                    .map(e -> e.format(dateFormatter))
+                    .collect(Collectors.toList());
+        }
+        return totalDates;
+    }
+
+    public void checkWorktime(String previousReceiptDate, int previousWorktime, int todayWorktime) {
+        LocalDate startDate = LocalDate.parse(previousReceiptDate);
+        System.out.println("Прошлое время: " + previousWorktime);
+        float readingsDays = (float)(todayWorktime-previousWorktime)/24;
+        System.out.println("Прошло дней по показаниям: " + readingsDays);
+        int daysDifference = (int)(startDate.until(LocalDate.now(), ChronoUnit.DAYS));
+        System.out.println("Прошло дней по пофакту: " + daysDifference);
+        float finalDifference = readingsDays - daysDifference;
+        System.out.println("Итоговая разница " + finalDifference);
+
+        // если нет прошлых дат???
+        // если узел без времени??
+        /*if (startDate.until(LocalDate.now(), ChronoUnit.DAYS)) {
+
+        }*/
+
+
+        // адаптировать мобильную версию, сравнив со старой
+        // убрать в таблице колонку worktime_out, убрать в методе saveRequest id_status и в объекте newRequest тоже, т. к. по
+        // умолчанию добавляется 3
+    }
 }
