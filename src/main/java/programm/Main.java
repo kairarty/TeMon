@@ -12,9 +12,6 @@ import programm.controllers.TrayController;
 import javax.swing.*;
 
 public class Main extends Application {
-    /*при пакетировании:
-    1) Отключить запуск с главной сцены*/
-
     @Override
     public void start(Stage mainStage) throws Exception {
         mainStage.getIcons().add(new Image("images/icon.png"));
@@ -24,8 +21,6 @@ public class Main extends Application {
         mainStage.setResizable(false);
         Platform.setImplicitExit(false);    // не завершать программу при закрытии последнего окна
         SwingUtilities.invokeLater(() -> TrayController.createTrayMenu(mainStage));     // запуск трея
-
-        //mainStage.show();
     }
 
     public static void main(String[] args) {
